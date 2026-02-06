@@ -1,1 +1,29 @@
-heloo
+clear; close all; clc;
+
+%% Paramter setup
+% Locations
+auburn_lat = 32.6;   % Reciever
+auburn_lon = -85.5;
+
+chesap_lat = 36.8;  % transmitter 1
+chesap_lon = -76.3;
+
+corpus_lat = 27.8;   % transmitter 2
+corpus_lon = -97.4;
+
+% Micah Day
+year = 2003;
+month = 6;
+day = 24;
+hour = 12;  % UTC
+Time = [year, month, day, hour, 0, 0];
+
+% Frequency range
+freq_start = 1;      % MHz
+freq_end = 10;       % MHz
+freq_step = 0.1;     % MHz
+
+fprintf('Receiver: Auburn, AL (%.2f, %.2f)\n', auburn_lat, auburn_lon);
+fprintf('Transmitter 1: Chesapeake, VA (%.2f, %.2f)\n', chesap_lat, chesap_lon);
+fprintf('Transmitter 1: Chesapeake, VA (%.2f, %.2f)\n', corpus_lat, corpus_lon);
+fprintf('Date and Time: %d-%02d-%02d %02d:00 \n', year, month, day, hour);
