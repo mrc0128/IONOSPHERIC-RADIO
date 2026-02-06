@@ -36,7 +36,7 @@ orig_lon = chesap_lon;
     orig_lon, 'wgs84');
 
 fprintf('\nChesapeake to Auburn:\n');
-fprintf('    Range: %.2f km\n', range_ches);
+fprintf('    Range: %.2f km\n', range_ches/1000);
 fprintf('    Bearing: %.2f degrees\n', bearing_ches);
 
 % calculate range from auburn to corpus 
@@ -46,7 +46,7 @@ orig_lon = corpus_lon;
     orig_lon, 'wgs84');
 
 fprintf('\nCorpus to Auburn:\n');
-fprintf('    Range: %.2f km\n', range_corpus);
+fprintf('    Range: %.2f km\n', range_corpus/1000);
 fprintf('    Bearing: %.2f degrees\n', bearing_corpus);
 
 
