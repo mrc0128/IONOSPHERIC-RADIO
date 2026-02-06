@@ -33,7 +33,21 @@ fprintf('Date and Time: %d-%02d-%02d %02d:00 \n', year, month, day, hour);
 orig_lat = chesap_lat;
 orig_lon = chesap_lon;
 [range_ches, bearing_ches] = latlon2raz(auburn_lat, auburn_lon, orig_lat, ...
-    orig_lon, 'wgs84')
+    orig_lon, 'wgs84');
+
+fprintf('\nChesapeake to Auburn:\n');
+fprintf('    Range: %.2f km\n', range_ches);
+fprintf('    Bearing: %.2f degrees\n', bearing_ches);
+
+% calculate range from auburn to corpus 
+orig_lat = corpus_lat;
+orig_lon = corpus_lon;
+[range_corpus, bearing_corpus] = latlon2raz(auburn_lat, auburn_lon, orig_lat, ...
+    orig_lon, 'wgs84');
+
+fprintf('\nCorpus to Auburn:\n');
+fprintf('    Range: %.2f km\n', range_corpus);
+fprintf('    Bearing: %.2f degrees\n', bearing_corpus);
 
 
 
