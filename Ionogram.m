@@ -27,3 +27,16 @@ fprintf('Receiver: Auburn, AL (%.2f, %.2f)\n', auburn_lat, auburn_lon);
 fprintf('Transmitter 1: Chesapeake, VA (%.2f, %.2f)\n', chesap_lat, chesap_lon);
 fprintf('Transmitter 1: Chesapeake, VA (%.2f, %.2f)\n', corpus_lat, corpus_lon);
 fprintf('Date and Time: %d-%02d-%02d %02d:00 \n', year, month, day, hour);
+
+% calculate range from auburn to chesap
+
+orig_lat = chesap_lat;
+orig_lon = chesap_lon;
+[range_ches, bearing_ches] = latlon2raz(auburn_lat, auburn_lon, orig_lat, ...
+    orig_lon, 'wgs84')
+
+
+
+
+
+
