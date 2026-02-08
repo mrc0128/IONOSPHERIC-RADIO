@@ -16,7 +16,7 @@ year = 2003;
 month = 6;
 day = 24;
 hour = 12;  % UTC
-Time = [year, month, day, hour, 0, 0];
+Time = [year, month, day, hour, 0];
 
 % Frequency range
 freq_start = 1;      % MHz
@@ -51,6 +51,35 @@ fprintf('    Bearing: %.2f degrees\n', bearing_corpus);
 
 
 
+R12 = 100; % sunspot 
+max_range = range_ches/1000; % num range step
+num_range = 201; 
+range_inc = max_range/(num_range-1);
+start_height = 60;
+height_inc = 2;
+num_heights = 201; % num of height steps
+kp = 4; % kp index 
+doppler_flag = 1; % doppler parameter 
 
+
+% generate ionogram for chesapeake transmitter
+tic
+[iono_pf_grid_ches, iono_pf_grid_5_ches, collision_freq_ches, irreg_ches, iono_te_grid_ches] = gen_iono_grid_2d(chesap_lat, chesap_lon, R12, Time, ...
+    bearing_ches, max_range, num_range, range_inc, ...
+    start_height, height_inc, num_heights, kp, doppler_flag);
+toc
+
+fprintf('Generated ionosphere: ')
+fprintf('Grid Size: %d heights x %d ranges\n', num_heights, num_range);
+
+% ray trace at 5 MHz
+
+fprintf('\nSingle ray trace for 5MHz\n');
+
+%ray param
+
+test_freq = 5.0; %MHz
+test_elev = 10; % degrees
+tol = [1e-7 0.01 25]; % ODE, target, iterations 
 
 
