@@ -92,6 +92,15 @@ toc
 
 fprintf('final ground range: %.2f km\n', ray_data.ground_range);
 
+fprintf('Find elevation angle');
+target_range = range_ches/1000; %km
+freq = 5; %MHz
+elevs = 3:0.5:45; %elevation grid
+
+%find good rays extract ground range
+freqs = freq * ones(size(elevs));
+[ray_data_fan, ~, ~] = raytrace_2d(auburn_lat, auburn_lon, elevs, bearing_ches, freqs, nhops, tol, ir_flag, iono_pf_grid_ches, iono_pf_grid_5_ches, collision_freq_ches, start_height, height_inc, range_inc, irreg_ches)
+
 
 
 
