@@ -69,24 +69,26 @@ tic
     start_height, height_inc, num_heights, kp, doppler_flag);
 toc
 
-fprintf('Generated ionosphere: ')
 fprintf('Grid Size: %d heights x %d ranges\n', num_heights, num_range);
 
 % ray trace at 5 MHz
 
 fprintf('\nSingle ray trace for 5MHz\n');
 
-%ray param
+% ray param
 
 test_freq = 5.0; %MHz
 test_elev = 10; % degrees (first guess)
 tol = [1e-7 0.01 25]; % ODE, target, iterations 
+nhops = 1; %hops
+ir_flag = 1; % irregularities flag 
 
 %trace ray 
-[ray_data, ray_path_data, ray_state_vec] = ...
-    raytrace_2d(auburn_lat, auburn_lon, test_elev, bearing_ches, test_freq, ...
-    0, iono_te_grid_ches, collision_freq_ches, ...
-    start_height, height_inc, range_inc, iono_pf_grid_ches, tol);
+
+tic
+
+[ray_data, ray_path_data, ray_state_vec] = raytrace_2d(auburn_lat, auburn_lon, test_elev, bearing_ches, test_freq, nhops, tol, ir_flag, iono_pf_grid_ches, iono_pf_grid_5_ches, collision_freq_ches, start_height, height_inc, range_inc, irreg_ches);
+toc
 
 fprintf('final ground range: %.2f km\n', ray_data.ground_range);
 
