@@ -1,3 +1,5 @@
+setenv('DIR_MODELS_REF_DAT', '/Users/micahchannell/pharlap/dat');
+
 clear; close all; clc;
 
 %% Paramter setup
@@ -51,14 +53,14 @@ fprintf('    Bearing: %.2f degrees\n', bearing_corpus);
 
 
 
-R12 = 100; % sunspot 
-max_range = range_ches/1000; % num range step
+R12 = 63.6; % sunspot 
+max_range = 5000; % num range step (increased 10%)
 num_range = 201; 
 range_inc = max_range/(num_range-1);
-start_height = 60;
+start_height = 0;
 height_inc = 2;
-num_heights = 201; % num of height steps
-kp = 4; % kp index 
+num_heights = 500; % num of height steps
+kp = 0; % kp index 
 doppler_flag = 1; % doppler parameter 
 
 
@@ -71,6 +73,9 @@ toc
 
 fprintf('Grid Size: %d heights x %d ranges\n', num_heights, num_range);
 
+iono_en_grid_ches = iono_pf_grid_ches.^2 / 80.6164e-6;
+iono_en_grid_5_ches = iono_pf_grid_ches.^2 / 80.6164e-6;
+
 % ray trace at 5 MHz
 
 fprintf('\nSingle ray trace for 5MHz\n');
@@ -81,13 +86,13 @@ test_freq = 5.0; %MHz
 test_elev = 10; % degrees (first guess)
 tol = [1e-7 0.01 25]; % ODE, target, iterations 
 nhops = 1; %hops
-ir_flag = 1; % irregularities flag 
+ir_flag = 0; % irregularities flag 
 
 %trace ray 
 
 tic
 
-[ray_data, ray_path_data, ray_state_vec] = raytrace_2d(auburn_lat, auburn_lon, test_elev, bearing_ches, test_freq, nhops, tol, ir_flag, iono_pf_grid_ches, iono_pf_grid_5_ches, collision_freq_ches, start_height, height_inc, range_inc, irreg_ches);
+[ray_data, ray_path_data, ray_state_vec] = raytrace_2d(chesap_lat, chesap_lon, test_elev, bearing_ches, test_freq, nhops, tol, ir_flag, iono_en_grid_ches, iono_en_grid_5_ches, collision_freq_ches, start_height, height_inc, range_inc, irreg_ches);
 toc
 
 fprintf('final ground range: %.2f km\n', ray_data.ground_range);
@@ -95,11 +100,28 @@ fprintf('final ground range: %.2f km\n', ray_data.ground_range);
 fprintf('Find elevation angle');
 target_range = range_ches/1000; %km
 freq = 5; %MHz
-elevs = 3:0.5:45; %elevation grid
+elevs = 0.5:0.5:60; %elevation grid
 
-%find good rays extract ground range
+%find good rays at all elevation
 freqs = freq * ones(size(elevs));
-[ray_data_fan, ~, ~] = raytrace_2d(auburn_lat, auburn_lon, elevs, bearing_ches, freqs, nhops, tol, ir_flag, iono_pf_grid_ches, iono_pf_grid_5_ches, collision_freq_ches, start_height, height_inc, range_inc, irreg_ches)
+[ray_data_fan, ~, ~] = raytrace_2d(chesap_lat, chesap_lon, elevs, bearing_ches, freqs, nhops, tol, ir_flag, iono_en_grid_ches, iono_en_grid_5_ches, collision_freq_ches, start_height, height_inc, range_inc, irreg_ches);
+
+
+gnd_ranges = zeros(size(elevs));
+for idx = 1:length(elevs)
+    if ray_data_fan(idx).ray_label == 1
+        gnd_ranges(idx) = ray_data_fan(idx).ground_range;
+    else 
+        gnd_ranges(idx) = NaN;
+    end
+end
+
+valid_idx = find(~isnan(gnd_ranges));
+fprintf(' %d good rays out of %d total\n', length(valid_idx), length(elevs));
+%
+fprintf('min range: %.2f km at %.1f degrees\n', min(gnd_ranges(valid_idx)), min(elevs(valid_idx(1))));
+fprintf(max(gnd_ranges(valid_idx)), max(elevs(valid_idx(end)))); 
+
 
 
 
