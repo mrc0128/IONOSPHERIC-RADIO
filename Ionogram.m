@@ -120,9 +120,32 @@ valid_idx = find(~isnan(gnd_ranges));
 fprintf(' %d good rays out of %d total\n', length(valid_idx), length(elevs));
 %
 fprintf('min range: %.2f km at %.1f degrees\n', min(gnd_ranges(valid_idx)), min(elevs(valid_idx(1))));
-fprintf(max(gnd_ranges(valid_idx)), max(elevs(valid_idx(end)))); 
+fprintf('max range: %.2f km at %.1f degrees\n', max(gnd_ranges(valid_idx)), max(elevs(valid_idx(end)))); 
 
 
+%find which ray his target range
+[min_diff, closest_idx] = min(abs(gnd_ranges(valid_idx)-target_range));
+
+fprintf('closest ray is %.2f km away from target\n', min_diff);
+fprintf('best elevation: %.1f degrees\n', elevs(valid_idx(closest_idx)));
+
+
+% best ray idx
+
+best_idx = valid_idx(closest_idx);
+
+%calc height for ray
+
+group_range = ray_data_fan(best_idx).group_range;
+ground_range = ray_data_fan(best_idx).ground_range;
+virtual_ht = ray_data_fan(best_idx).apogee;
+
+fprintf('n\5 MHz: \n');
+fprintf('   Ground Range: %.2f km\n', ground_range);
+fprintf('   Group Range: %.2f km\n', group_range);
+fprintf('   Virtual Height: %.2f km\n', virtual_ht);
+fprintf('   Best Ray Index: %d\n', best_idx);
+fprintf('   Elevation Angle: %.1f degrees\n', elevs(best_idx));
 
 
 
