@@ -147,5 +147,29 @@ fprintf('   Virtual Height: %.2f km\n', virtual_ht);
 fprintf('   Best Ray Index: %d\n', best_idx);
 fprintf('   Elevation Angle: %.1f degrees\n', elevs(best_idx));
 
+% frequency array
+freqs_array = freq_start:freq_step:freq_end;
+num_freqs = length(freqs_array);
 
+% more arrays
+virtual_ht_ches = NaN(num_freqs, 1);
+elevations_ches = NaN(num_freqs, 1);
+
+fprintf('Full Ionogram For Chesapeake');
+fprintf('testing freq from %.1f to %.1f MHz\n', freq_start, freq_end);
+
+%trace rays at all elevations for freq
+
+freq_vec = freq * ones(size(elevs));
+[ray_data_fan, ~, ~] = raytrace_2d(chesap_lat, chesap_lon, elevs, ...
+    bearing_ches, freq_vec, nhops, tol, ir_flag);
+
+%extract ground ranges for rays
+
+gnd_ranges = NaN(size(elevs));
+for idx = 1:length(elevs)
+    if ray_data_fan(idx).ray_label == 1
+        gnd_ranges(idx) = ray_data_fan(idx).ground_range;
+    end
+end
 
