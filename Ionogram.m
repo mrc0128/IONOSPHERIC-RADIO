@@ -158,9 +158,13 @@ elevations_ches = NaN(num_freqs, 1);
 fprintf('Full Ionogram For Chesapeake');
 fprintf('testing freq from %.1f to %.1f MHz\n', freq_start, freq_end);
 
+% loop each frequency
+for freq_idx = 1:num_freqs
+    current_freq = freqs_array(freq_idx);
+
 % trace rays at all elevations for freq
 
-freq_vec = freq * ones(size(elevs));
+freq_vec = current_freq * ones(size(elevs));
 [ray_data_fan, ~, ~] = raytrace_2d(chesap_lat, chesap_lon, elevs, ...
     bearing_ches, freq_vec, nhops, tol, ir_flag);
 
@@ -182,5 +186,13 @@ else
     [min_diff, closoest_idx] = min(abs(gnd_ranges(valid_idx)-target_range));
 fprintf('The closest ray is %.2f km away from the target\n', min_diff);
 fprintf('Best elevation: %.1f degrees\n', elevs(valid_idx(closest_idx)));
+
+% store the results
+    best_idx = valid_idx(closoest_idx);
+    elevations_ches(freq_idx) = elevs(best_idx);
+    virtual_ht_ches(freq_idx) = ray_data_fan(best_idx).apogee;
+    ground_range_ches(freq_idx) = ray_data_fan(best_idx).ground_range;
+    group_ranges_ches(freq_idx) = ray_data_fan(best_idx).group_range;
+end
 
 end
