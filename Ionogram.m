@@ -88,7 +88,7 @@ tol = [1e-7 0.01 25]; % ODE, target, iterations
 nhops = 1; %hops
 ir_flag = 0; % irregularities flag 
 
-%trace ray 
+% trace ray 
 
 tic
 
@@ -102,7 +102,7 @@ target_range = range_ches/1000; %km
 freq = 5; %MHz
 elevs = 0.5:0.5:60; %elevation grid
 
-%find good rays at all elevation
+% find good rays at all elevation
 freqs = freq * ones(size(elevs));
 [ray_data_fan, ~, ~] = raytrace_2d(chesap_lat, chesap_lon, elevs, bearing_ches, freqs, nhops, tol, ir_flag, iono_en_grid_ches, iono_en_grid_5_ches, collision_freq_ches, start_height, height_inc, range_inc, irreg_ches);
 
@@ -123,7 +123,7 @@ fprintf('min range: %.2f km at %.1f degrees\n', min(gnd_ranges(valid_idx)), min(
 fprintf('max range: %.2f km at %.1f degrees\n', max(gnd_ranges(valid_idx)), max(elevs(valid_idx(end)))); 
 
 
-%find which ray his target range
+% find which ray his target range
 [min_diff, closest_idx] = min(abs(gnd_ranges(valid_idx)-target_range));
 
 fprintf('closest ray is %.2f km away from target\n', min_diff);
@@ -134,7 +134,7 @@ fprintf('best elevation: %.1f degrees\n', elevs(valid_idx(closest_idx)));
 
 best_idx = valid_idx(closest_idx);
 
-%calc height for ray
+% calc height for ray
 
 group_range = ray_data_fan(best_idx).group_range;
 ground_range = ray_data_fan(best_idx).ground_range;
@@ -158,13 +158,13 @@ elevations_ches = NaN(num_freqs, 1);
 fprintf('Full Ionogram For Chesapeake');
 fprintf('testing freq from %.1f to %.1f MHz\n', freq_start, freq_end);
 
-%trace rays at all elevations for freq
+% trace rays at all elevations for freq
 
 freq_vec = freq * ones(size(elevs));
 [ray_data_fan, ~, ~] = raytrace_2d(chesap_lat, chesap_lon, elevs, ...
     bearing_ches, freq_vec, nhops, tol, ir_flag);
 
-%extract ground ranges for rays
+% extract ground ranges for rays
 
 gnd_ranges = NaN(size(elevs));
 for idx = 1:length(elevs)
@@ -173,3 +173,14 @@ for idx = 1:length(elevs)
     end
 end
 
+% find valid rays
+valid_idx = find(~isnan(gnd_ranges));
+
+if isempty(valid_idx)
+    fprintf('you got no rays lol');
+else
+    [min_diff, closoest_idx] = min(abs(gnd_ranges(valid_idx)-target_range));
+fprintf('The closest ray is %.2f km away from the target\n', min_diff);
+fprintf('Best elevation: %.1f degrees\n', elevs(valid_idx(closest_idx)));
+
+end
