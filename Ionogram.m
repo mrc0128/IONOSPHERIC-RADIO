@@ -27,7 +27,7 @@ freq_step = 0.1;     % MHz
 
 fprintf('Receiver: Auburn, AL (%.2f, %.2f)\n', auburn_lat, auburn_lon);
 fprintf('Transmitter 1: Chesapeake, VA (%.2f, %.2f)\n', chesap_lat, chesap_lon);
-fprintf('Transmitter 1: Chesapeake, VA (%.2f, %.2f)\n', corpus_lat, corpus_lon);
+fprintf('Transmitter 2: Corpus, Texas (%.2f, %.2f)\n', corpus_lat, corpus_lon);
 fprintf('Date and Time: %d-%02d-%02d %02d:00 \n', year, month, day, hour);
 
 % calculate range from auburn to chesap
@@ -183,16 +183,33 @@ valid_idx = find(~isnan(gnd_ranges));
 if isempty(valid_idx)
     fprintf('you got no rays lol');
 else
-    [min_diff, closoest_idx] = min(abs(gnd_ranges(valid_idx)-target_range));
+    [min_diff, closest_idx] = min(abs(gnd_ranges(valid_idx)-target_range));
 fprintf('The closest ray is %.2f km away from the target\n', min_diff);
 fprintf('Best elevation: %.1f degrees\n', elevs(valid_idx(closest_idx)));
 
 % store the results
-    best_idx = valid_idx(closoest_idx);
+    best_idx = valid_idx(closest_idx);
     elevations_ches(freq_idx) = elevs(best_idx);
     virtual_ht_ches(freq_idx) = ray_data_fan(best_idx).apogee;
-    ground_range_ches(freq_idx) = ray_data_fan(best_idx).ground_range;
+    ground_ranges_ches(freq_idx) = ray_data_fan(best_idx).ground_range;
     group_ranges_ches(freq_idx) = ray_data_fan(best_idx).group_range;
 end
 
 end
+
+
+% store array for ground ranges
+ground_ranges_ches = NaN(num_freqs, 1);
+group_ranges_ches = NaN(num_freqs, 1);
+
+figure('Position', [100, 100, 1000, 800]);
+
+
+% plot virtual height vs frequency 
+subplot(2,2,1);
+plot(freqs_array, virtual_ht_ches, 'b.-', 'LineWidth',2, 'MarkerSize',8);
+grid on;
+xlabel('Frequency (MHz)', 'FontSize', 11);
+ylabel('Virtual Height (km)', 'FontSize', 11);
+title(sprintf('Ionogram: Chesapeark to Auburn\nRange: %.0f km, Bearing: %.1f', target_range, bearing_ches), 'FontSize', 12);
+xlim([freq_start freq_end]);
