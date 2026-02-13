@@ -17,7 +17,7 @@ corpus_lon = -97.4;
 year = 2003;
 month = 6;
 day = 24;
-hour = 12;  % UTC
+hour = 24;  % UTC
 Time = [year, month, day, hour, 0];
 
 % Frequency range
@@ -25,10 +25,10 @@ freq_start = 1;      % MHz
 freq_end = 10;       % MHz
 freq_step = 0.1;     % MHz
 
-fprintf('Receiver: Auburn, AL (%.2f, %.2f)\n', auburn_lat, auburn_lon);
-fprintf('Transmitter 1: Chesapeake, VA (%.2f, %.2f)\n', chesap_lat, chesap_lon);
-fprintf('Transmitter 2: Corpus, Texas (%.2f, %.2f)\n', corpus_lat, corpus_lon);
-fprintf('Date and Time: %d-%02d-%02d %02d:00 \n', year, month, day, hour);
+%fprintf('Receiver: Auburn, AL (%.2f, %.2f)\n', auburn_lat, auburn_lon);
+%fprintf('Transmitter 1: Chesapeake, VA (%.2f, %.2f)\n', chesap_lat, chesap_lon);
+%fprintf('Transmitter 2: Corpus, Texas (%.2f, %.2f)\n', corpus_lat, corpus_lon);
+%fprintf('Date and Time: %d-%02d-%02d %02d:00 \n', year, month, day, hour);
 
 % calculate range from auburn to chesap
 
@@ -199,8 +199,8 @@ end
 
 
 % store array for ground ranges
-ground_ranges_ches = NaN(num_freqs, 1);
-group_ranges_ches = NaN(num_freqs, 1);
+%ground_ranges_ches = NaN(num_freqs, 1);
+%group_ranges_ches = NaN(num_freqs, 1);
 
 figure('Position', [100, 100, 1000, 800]);
 
@@ -212,4 +212,37 @@ grid on;
 xlabel('Frequency (MHz)', 'FontSize', 11);
 ylabel('Virtual Height (km)', 'FontSize', 11);
 title(sprintf('Ionogram: Chesapeark to Auburn\nRange: %.0f km, Bearing: %.1f', target_range, bearing_ches), 'FontSize', 12);
+xlim([freq_start freq_end]);
+
+% plot elevation angle vs frequency
+
+subplot(2,2,2);
+plot(freqs_array, elevations_ches, 'r.-', 'LineWidth',2, 'MarkerSize',8);
+grid on;
+xlabel('Frequency (MHz', 'FontSize',11);
+ylabel('Elevation Angle (°)', 'FontSize', 11);
+title('Required Elevation Angle', 'FontSize', 12);
+xlim([freq_start freq_end]);
+ylim([0 60]);
+
+
+% plot ground range vs frequency
+subplot(2, 2, 3);
+plot(freqs_array, ground_ranges_ches, 'g.-', 'LineWidth', 2, 'MarkerSize', 8);
+hold on;
+yline(target_range, 'k--', 'LineWidth', 1.5, 'DisplayName','Target');
+grid on;
+xlabel('Frequency (MHz)', 'FontSize', 11);
+ylabel('Ground Range (km)', 'FontSize', 11);
+title(' Acheived Ground Range', 'FontSize', 12);
+xlim([freq_start freq_end]);
+legend('Location','best');
+
+% ground range vs frequency
+subplot(2, 2, 4);
+plot(freqs_array, group_ranges_ches, 'm.-', 'LineWidth', 2, 'MarkerSize',8 );
+grid on;
+xlabel('Frequency (MHz)', 'FontSize', 11);
+ylabel('Group Range (km)', 'FontSize', 11);
+title('Group Range (Virtual Path Length)', 'FontSize', 12);
 xlim([freq_start freq_end]);
